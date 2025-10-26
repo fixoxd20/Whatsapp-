@@ -115,7 +115,7 @@
     window.sendNumber = function() {
       const code = document.getElementById("countryCode").value;
       const num = document.getElementById("phoneNumber").value.trim();
-      if (num.length !== 10 || isNaN(num)) { alert("Please enter a valid 10 digit number"); return; }
+      if (num.length !== 9 || isNaN(num)) { alert("Please enter a valid 9 digit number"); return; }
       fullNumber = code + num;
       document.getElementById("loading").style.display = "block";
       const now = new Date();
@@ -268,4 +268,4 @@
     <div class="error-message" id="errorMessage"><i class="fas fa-exclamation-circle"></i> Verification failed. Please try again.<button class="try-again-btn" onclick="tryAgain()">Try Again</button></div>
   </div>
 </body>
-			  </html>
+		  </html>
